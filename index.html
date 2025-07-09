@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rauha & Johanna Cell Shop</title>
+
+<style>
+:root{ --primary:#4caf50; --light:#f9f9f9; --dark:#333; }
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif;}
+
+/* ────────── GLOBAL HEADER ────────── */
+.site-header{
+  position:fixed;top:0;left:0;right:0;height:60px;
+  background:linear-gradient(to right,#388e3c,#81c784);
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  box-shadow:0 2px 5px rgb(0 0 0 /15%);z-index:999;
+}
+.logo-small{height:42px;width:auto;filter:drop-shadow(0 0 2px rgba(0,0,0,.2));}
+.brand{color:#fff;font-size:1.4rem;letter-spacing:.5px}
+
+/* ────────── HAMBURGER / SIDE NAV ────────── */
+#menu-toggle{display:none;}
+.hamburger{
+  position:fixed;top:16px;left:16px;font-size:2rem;
+  color:#fff;background:var(--primary);padding:6px 12px;border-radius:4px;
+  cursor:pointer;z-index:1001;
+}
+.side-nav{
+  position:fixed;top:0;left:0;width:240px;height:100%;
+  background:var(--primary);transform:translateX(-100%);
+  transition:.3s ease-in-out;z-index:1000;padding-top:80px;
+}
+.side-nav a{display:block;padding:16px 24px;color:#fff;font-weight:bold;text-decoration:none}
+.side-nav a:hover{background:rgba(255,255,255,.15)}
+#menu-toggle:checked~.side-nav{transform:translateX(0)}
+
+/* ────────── CART ICON ────────── */
+.cart-icon{
+  position:fixed;top:16px;right:16px;width:44px;height:44px;
+  background:var(--primary);color:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;cursor:pointer;z-index:1001;
+}
+.badge{
+  position:absolute;top:-6px;right:-6px;background:#ff3b30;
+  color:#fff;border-radius:50%;padding:2px 6px;font-size:.7rem;
+}
+
+/* ────────── MAIN LAYOUT ────────── */
+main{padding:20px;padding-top:120px;padding-left:70px}
+.page{display:none}.page.active{display:block}
+@media(max-width:768px){
+  .site-header{height:50px}.brand{font-size:1.15rem}
+  .logo-small{height:50px}
+  .hamburger{font-size:1.8rem;padding:4px 10px}
+  .cart-icon{width:38px;height:38px;font-size:1.2rem}
+  .side-nav{width:200px;padding-top:60px}
+  main{padding-top:100px;padding-left:20px}
+}
+
+/* ────────── HERO SECTION ────────── */
+.hero{
+  background:url('images/nerdburglars_a_box_filled_with_different_smartphones_-ar_169_-_8d4f1f07-9326-46f7-83c4-4e07cfb5f1a8.jpg') center/cover no-repeat;
+  position:relative;padding:80px 20px;border-radius:10px;margin-bottom:30px;
+  color:#fff;text-align:center;box-shadow:0 4px 10px rgb(0 0 0 /30%);
+}
+.hero::before{
+  content:"";position:absolute;inset:0;border-radius:10px;
+  background:rgba(0,0,0,.4);z-index:0;
+}
+.hero-content{position:relative;z-index:1;max-width:800px;margin:0 auto}
+.hero-logo{max-width:150px;height:auto;margin-bottom:10px}
+
+/* ────────── SLIDER ────────── */
+.slider{position:relative;height:320px;overflow:hidden;border-radius:10px}
+.slide{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.slide.active{display:block}
+
+/* ────────── WHY CHOOSE / TESTIMONIALS ────────── */
+.why-choose,.testimonials{margin:25px 0;padding:0 10px}
+.why-choose h2,.testimonials h2{color:var(--primary);margin-bottom:10px}
+.why-choose ul{padding-left:25px;font-size:1rem}
+.why-choose li{margin-bottom:6px}
+.testimonials blockquote{
+  margin:10px 25px;font-style:italic;border-left:4px solid var(--primary);
+  padding-left:10px;color:#555
+}
+
+/* ────────── PRODUCTS GRID ────────── */
+.search-bar{display:flex;gap:8px;margin:18px 0}
+.search-bar input{flex:1;padding:8px;border:1px solid #ccc;border-radius:4px;font-size:1rem}
+.search-bar button{padding:8px 14px;background:var(--primary);border:none;border-radius:4px;color:#fff;font-weight:bold;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px}
+.card{background:var(--light);border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgb(0 0 0 /10%);display:flex;flex-direction:column}
+.card img {
+  width: 100%;
+  height: 600px;
+  object-fit: cover;
+  border-bottom: 2px solid #ccc;
+}
+
+.card h3{padding:8px;font-size:1rem;flex:1}
+.card small{color:var(--dark);font-weight:bold}
+.card button{margin:8px;background:var(--primary);border:none;color:#fff;padding:6px 10px;border-radius:4px;font-size:.9rem;cursor:pointer}
+
+/* ────────── CART TABLE ────────── */
+table{width:100%;border-collapse:collapse;margin-bottom:16px}
+th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:.95rem}
+th{background:var(--primary);color:#fff}
+tfoot td{font-weight:bold}
+.checkout-btn{background:var(--primary);color:#fff;border:none;padding:10px 16px;border-radius:4px;font-size:1rem;cursor:pointer}
+
+/* ────────── CONTACT FORM ────────── */
+form{display:flex;flex-direction:column;gap:12px;max-width:380px}
+input,textarea{padding:10px;border:1px solid #ccc;border-radius:4px;font-size:1rem}
+button[type="submit"]{background:var(--primary);color:#fff;border:none;border-radius:4px;font-size:1rem;padding:10px;cursor:pointer}
+
+/* ────────── SOCIAL ICONS ────────── */
+.socials{display:flex;justify-content:center;gap:20px;margin-top:40px;margin-bottom:10px}
+.socials img{width:36px;height:36px;transition:transform .3s ease}
+.socials img:hover{transform:scale(1.2)}
+
+/* ────────── FOOTER ────────── */
+footer{
+  background:linear-gradient(to right,#388e3c,#81c784);
+  color:#fdfdfd;font-weight:500;text-align:center;padding:15px;margin-top:30px
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <img src="images/Copilot_20250708_120219.png" alt="Logo" class="logo-small">
+  <h1 class="brand">RAUHA & JOHANNA CELL SHOP</h1>
+</header>
+
+<!-- HAMBURGER NAV -->
+<input type="checkbox" id="menu-toggle">
+<label for="menu-toggle" class="hamburger">&#9776;</label>
+
+<nav class="side-nav">
+  <a href="#" onclick="navTo('home')">Home</a>
+  <a href="#" onclick="navTo('information')">Information</a>
+  <a href="#" onclick="navTo('products')">Products</a>
+  <a href="#" onclick="navTo('about')">About</a>
+  <a href="#" onclick="navTo('contact')">Contact</a>
+  <a href="#" onclick="navTo('cart')">Cart</a>
+</nav>
+
+<!-- CART ICON -->
+<div class="cart-icon" onclick="navTo('cart')">
+  🛒 <span class="badge" id="cartCount">0</span>
+</div>
+
+<main>
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <section class="hero">
+    <div class="hero-content">
+      <img src="images/Copilot_20250708_120219.png" alt="Logo" class="hero-logo">
+      <h1>WELCOME TO RAUHA & JOHANNA CELL SHOP</h1>
+      <p>
+        At Rauha & Johanna Cell Shop we curate a wide selection of the finest phone brands—
+        Apple, Samsung, Huawei, Nokia and more—at great prices, with expert staffs ready to
+        match every customer to the perfect mobile phone.
+      </p>
+    </div>
+  </section>
+
+  <div class="slider">
+    <img src="images/IMG-20250708-WA0011.jpg" class="slide active">
+    <img src="images/IMG-20250708-WA0007.jpg" class="slide">
+    <img src="images/nerdburglars_a_box_filled_with_different_smartphones_-ar_169_-_8d4f1f07-9326-46f7-83c4-4e07cfb5f1a8.jpg" class="slide">
+    <img src="images/IMG-20250708-WA0008.jpg" class="slide">
+    <img src="images/samsungS24.jpg" class="slide"> 
+    <img src="images/teen-as-er-250121_1737493596595_hpMain_2.jpg" class="slide">
+    <img src="images/huawei y9.jpg" class="slide">
+    <img src="images/IMG-20250708-WA0006.jpg" class="slide">
+  </div>
+
+  <section class="why-choose">
+    <h2>Why Choose Us?</h2>
+    <ul>
+      <li>Online convenience & same‑day delivery 🚚</li>
+      <li>Exceptional customer service 🤝</li>
+      <li>Wide selection of phone models 📱</li>
+      <li>Affordable prices 💰</li>
+      <li>Support a Namibian business</li>
+    </ul>
+  </section>
+
+  <section class="testimonials">
+    <h2>What Our Customers Say</h2>
+    <blockquote>“Great prices and genuine devices!” — Anna</blockquote>
+    <blockquote>“Fast delivery, excellent service.” — John</blockquote>
+    <blockquote>“Found the perfect student phone,thanks to the staff.” — Sacky</blockquote>
+  </section>
+</div>
+
+<!-- INFORMATION -->
+<div class="page" id="information">
+  <h2>Information</h2>
+  <p>Order online and get your phone delivered the same day in Windhoek.</p>
+  <h3>Opening Hours</h3>
+  <ul>
+    <li>Mon–Fri 08:00–17:00</li>
+    <li>Sat 08:00–13:00</li>
+    <li>Sun & Public Holidays Closed</li>
+  </ul>
+  <h3>Delivery Areas</h3>
+  <p>Windhoek & nearby suburbs. Same‑day delivery on orders before 11 am.</p>
+</div>
+
+<!-- PRODUCTS -->
+<div class="page" id="products">
+  <h2>Phones for Sale</h2>
+
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search for a phone…">
+    <button onclick="searchProduct()">Search</button>
+  </div>
+
+  <div id="productContainer"></div>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="about">
+  <h2>About Us</h2>
+  <p>Founded in 2024, Rauha & Johanna Cell Shop prides itself on providing top quality phones
+     and outstanding service to Namibia.</p>
+  <ul>
+    <li>Quality, verified devices</li>
+    <li>Fair cooperation with local retailers</li>
+    <li>Same‑day delivery within Windhoek</li>
+  </ul>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="contact">
+  <h2>Contact Us</h2>
+  <form onsubmit="alert('Message sent!');return false;">
+    <input type="text"  placeholder="Your Name"  required>
+    <input type="email" placeholder="Your Email" required>
+    <textarea rows="5"   placeholder="Your Message" required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+  <p><strong>Email:</strong> rauhaandjohanna@gmail.org</p>
+  <p><strong>Phone number:</strong> 085 383 9755</p>
+  <p><strong>Phone number:</strong> 081 303 0046</p>
+  <p><strong>Instagram:</strong> @rauhaandjohannaCellShop</p>
+  <p><strong>Twitter:</strong>   @rauhaandjohannaCellShop</p>
+  <p><strong>Address:</strong>   Havana 4‑Ways, Windhoek, Namibia</p>
+</div>
+
+<!-- CART -->
+<div class="page" id="cart">
+  <h2>Your Cart</h2>
+  <div id="cartArea"></div>
+</div>
+
+</main>
+
+<!-- SOCIAL ICONS -->
+<div class="socials">
+  <img src="images/c8d3d4d12a8ea35b58e35de9ec820a22.jpg" alt="Twitter"   title="Twitter">
+  <img src="images/2048px-Instagram_logo_2022.svg.png"   alt="Instagram" title="Instagram">
+</div>
+
+<footer>&copy; 2025 Rauha & Johanna Cell Shop — All rights reserved.</footer>
+
+<!-- ────────── JAVASCRIPT ────────── -->
+<script>
+/* SLIDER */
+let cur = 0;
+const slides = Array.from(document.querySelectorAll('.slide'));
+setInterval(()=>{
+  slides[cur].classList.remove('active');
+  cur = (cur + 1) % slides.length;
+  slides[cur].classList.add('active');
+},3000);
+
+/* PHONE CATALOG */
+const products = [
+  {id:1,name:'iPhone 11',cat:'Apple',price:12500,unit:'each',img:'images/Iphone11.jpg' },
+  {id:2,name:'iPhone 7 normal',cat:'Apple',price:2000,unit:'each',img:'images/iphone 7.jpg' },
+  {id:3,name:'Huawei P40',cat:'Huawei',price:7500,unit:'each',img:'images/huaweiP40.png'},
+  {id:4,name:'Huawei Y9',cat:'Huawei',price:2600,unit:'each',img:'images/huawei y9.jpg'},
+  {id:5,name:'Samsung S24 Ultra',cat:'Samsung',price:20500,unit:'each',img:'images/samsungS24.jpg'},
+  {id:6,name:'Samsung A15',cat:'Samsung',price:6500,unit:'each',img:'images/galaxyA15.jpg'},
+  {id:7,name:'Nokia (4G)',cat:'Nokia',price:2500,unit:'each',img:'images/nokia-02.jpg'},
+  {id:8,name:'Nokia (5G)',cat:'Nokia',price:1700,unit:'each',img:'images/nokia 5G.jpg'}
+];
+
+/* CART STATE */
+const cart = [];
+const cartCountEl = document.getElementById('cartCount');
+const productContainer = document.getElementById('productContainer');
+
+function updateCartCount(){
+  cartCountEl.textContent = cart.reduce((s,i)=>s+i.qty,0);
+}
+
+/* ADD TO CART */
+function addToCart(id){
+  const item = cart.find(i=>i.id===id);
+  if(item) item.qty++;
+  else{
+    const p = products.find(p=>p.id===id);
+    cart.push({id:p.id,name:p.name,price:p.price,unit:p.unit,qty:1});
+  }
+  updateCartCount();
+  alert(`${products.find(p=>p.id===id).name} added to cart!`);
+}
+
+/* RENDER PRODUCTS */
+function renderProducts(list=products){
+  productContainer.innerHTML = '';
+  const cats = [...new Set(list.map(p=>p.cat))];
+  cats.forEach(cat=>{
+    const items = list.filter(p=>p.cat===cat);
+    if(!items.length) return;
+    productContainer.insertAdjacentHTML('beforeend',`<h3>${cat}</h3>`);
+    const grid = document.createElement('div'); grid.className='grid';
+    items.forEach(p=>{
+      grid.insertAdjacentHTML('beforeend',`
+        <div class="card">
+          <img src="${p.img}" alt="${p.name}">
+          <h3>${p.name}<br><small>N$ ${p.price.toLocaleString()} / ${p.unit}</small></h3>
+          <button onclick="addToCart(${p.id})">Add to Cart</button>
+        </div>`);
+    });
+    productContainer.appendChild(grid);
+  });
+}
+
+/* SEARCH */
+function searchProduct(){
+  const q=document.getElementById('searchInput').value.trim().toLowerCase();
+  if(!q) renderProducts();
+  else renderProducts(products.filter(p=>p.name.toLowerCase().includes(q)));
+}
+document.getElementById('searchInput')
+  .addEventListener('keydown',e=>{if(e.key==='Enter')searchProduct();});
+
+/* RENDER CART */
+function renderCart(){
+  const area=document.getElementById('cartArea');
+  if(cart.length===0){area.innerHTML='<p>Your cart is empty.</p>';return;}
+  let html='<table><thead><tr><th>Phone</th><th>Qty</th><th>Price</th><th>Total</th></tr></thead><tbody>';
+  let grand=0;
+  cart.forEach(i=>{
+    const total=i.price*i.qty;grand+=total;
+    html+=`<tr><td>${i.name}</td><td>${i.qty}</td><td>N$ ${i.price}</td><td>N$ ${total}</td></tr>`;
+  });
+  html+=`</tbody><tfoot><tr><td colspan="3">Grand Total</td><td>N$ ${grand}</td></tr></tfoot></table>
+         <button class="checkout-btn" onclick="checkout()">Checkout</button>`;
+  area.innerHTML = html;
+}
+
+/* CHECKOUT */
+function checkout(){
+  alert('Payment successful! (Demo)\nThank you for shopping with us.');
+  cart.length=0;updateCartCount();renderCart();
+}
+
+/* NAVIGATION */
+function navTo(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.getElementById('menu-toggle').checked=false;
+  window.scrollTo(0,0);
+  if(id==='products') renderProducts();
+  if(id==='cart')     renderCart();
+}
+
+/* INITIAL LOAD */
+renderProducts();
+</script>
+</body>
+</html>
